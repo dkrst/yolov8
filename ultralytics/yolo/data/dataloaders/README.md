@@ -1,10 +1,13 @@
-# yolov8/ultralytics/nn
+# yolov8/ultralytics/yolo/data/dataloaders/
 
-Implementations of NN modules
+DataLoaders
 
 ## Files
 - [autobackend.py](autobackend.py): To be done...
-- [autoshape.py](autoshape.py): To be done...
-- [modules.py](modules.py): Implementacija NN blokova (Conv, DWConv, ...) 
-- [tasks.py](tasks.py): Implementacija modela (BaseModel, DetectionModel, SegmentationModel, ...)
+- [stream_loaders.py](stream_loaders.py): To be done...
+- [v5augmentations.py](v5augmentations.py): To be done... 
+- [v5loader.py](v5loader.py): Implementacija dataloadera iz Yolov5
 
+## Dataset and DataLoaders tutorial
+
+https://pytorch.org/tutorials/beginner/basics/data_tutorial.html
