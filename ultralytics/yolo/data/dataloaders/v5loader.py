@@ -426,11 +426,24 @@ class LoadStreams:
     def __len__(self):
         return len(self.sources)  # 1E12 frames = 32 streams at 30 FPS for 30 years
 
-
+# STARO
+'''
 def img2label_paths(img_paths):
     # Define label paths as a function of image paths
     sa, sb = f'{os.sep}images{os.sep}', f'{os.sep}labels{os.sep}'  # /images/, /labels/ substrings
     return [sb.join(x.rsplit(sa, 1)).rsplit('.', 1)[0] + '.txt' for x in img_paths]
+'''
+
+# DAMIR
+# Dopustam proizvoljno ime za direktorij sa slikama
+def img2label_paths(img_paths):
+    # Define label paths as a function of image paths
+    sb = f'{os.sep}labels{os.sep}'
+    l = []
+    for x in img_paths:
+        sa = f'{os.sep}{Path(x).parent.name}{os.sep}'
+        l.append(sb.join(x.rsplit(sa, 1)).rsplit('.', 1)[0] + '.txt')
+    return l
 
 
 class LoadImagesAndLabels(Dataset):
