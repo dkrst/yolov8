@@ -15,4 +15,7 @@ https://pytorch.org/tutorials/beginner/basics/data_tutorial.html
 - Dataset stores the samples and their corresponding labels
 - DataLoader wraps an iterable around the Dataset to enable easy access to the samples
 
+### Creating a Custom Dataset for your files
+
+https://pytorch.org/tutorials/beginner/basics/data_tutorial.html#creating-a-custom-dataset-for-your-files
 
