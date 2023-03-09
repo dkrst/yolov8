@@ -69,7 +69,7 @@ def create_dataloader(path,
                       imgsz,
                       batch_size,
                       stride,
-                      nchannels=3,
+                      nchannels=6, # DAMIR
                       single_cls=False,
                       hyp=None,
                       augment=False,
@@ -177,7 +177,7 @@ class LoadImagesAndLabels(Dataset):
                  path,
                  img_size=640,
                  batch_size=16,
-                 nchannels=3,
+                 nchannels=6, # DAMIR
                  augment=False,
                  hyp=None,
                  rect=False,
@@ -701,7 +701,7 @@ def verify_npy_label(args):
         shape = im.shape[:2]
         channels = im.shape[2]
         assert (shape[0] > 9) & (shape[1] > 9), f'image size {shape} <10 pixels'
-        assert channels == nchannels, f'invalid number of image channels {channels}'
+        assert channels == nchannels, f'invalid number of image channels {channels} - {nchannels}'
         
         # verify labels
         if os.path.isfile(lb_file):

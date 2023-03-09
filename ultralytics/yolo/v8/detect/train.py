@@ -30,6 +30,7 @@ class DetectionTrainer(BaseTrainer):
                                  imgsz=self.args.imgsz,
                                  batch_size=batch_size,
                                  stride=gs,
+                                 #nchannels=self.args.model.ch,
                                  hyp=vars(self.args),
                                  augment=mode == 'train',
                                  cache=self.args.cache,
