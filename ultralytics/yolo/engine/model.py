@@ -113,28 +113,13 @@ class YOLO:
         """
         self.cfg = check_yaml(cfg)  # check YAML
         cfg_dict = yaml_load(self.cfg, append_filename=True)  # model dict
-        # DAMIR
-        import yaml
-        dump = yaml.dump(cfg_dict, sort_keys=False, allow_unicode=True)
-        LOGGER.info(f"CFG_DICT: \n{dump}")
-        # DAMIR
         self.task = task or guess_model_task(cfg_dict)
         self.model = TASK_MAP[self.task][0](cfg_dict, verbose=verbose and RANK == -1)  # build model
         self.overrides['model'] = self.cfg
 
         # Below added to allow export from yamls
         args = {**DEFAULT_CFG_DICT, **self.overrides}  # combine model and default args, preferring model args
-        # DAMIR
-        '''
-        LOGGER.info(f"ARGS: \n{args}")
-        '''
-        # DAMIR
         self.model.args = {k: v for k, v in args.items() if k in DEFAULT_CFG_KEYS}  # attach args to model
-        # DAMIR
-        '''
-        LOGGER.info(f"DOMEL ARGS \n{self.model.args}")
-        '''
-        # DAMIR
         self.model.task = self.task
 
     def _load(self, weights: str, task=None):

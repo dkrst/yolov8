@@ -26,11 +26,16 @@ class DetectionTrainer(BaseTrainer):
         # TODO: manage splits differently
         # calculate stride - check if model is initialized
         gs = max(int(de_parallel(self.model).stride.max() if self.model else 0), 32)
+        # DAMIR
+        # print(f"\nmodel: \n{self.model.yaml}")
+        ch = self.model.yaml.get('ch', 3)
+        print(f"\nCHANNELS: \n{ch}")
+        # DAMIR
         return create_dataloader(path=dataset_path,
                                  imgsz=self.args.imgsz,
                                  batch_size=batch_size,
                                  stride=gs,
-                                 #nchannels=self.args.model.ch,
+                                 nchannels=ch,
                                  hyp=vars(self.args),
                                  augment=mode == 'train',
                                  cache=self.args.cache,
