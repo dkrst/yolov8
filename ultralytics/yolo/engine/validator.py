@@ -112,9 +112,9 @@ class BaseValidator:
             model = model.half() if self.args.half else model.float()
             self.model = model
             # DAMIR
-            self.model.info()
-            print("\nNC: ", self.model.nc, "\n")
-            print("\nCH: ", self.model.ch, "\n")
+            # self.model.info()
+            # print("\nNC: ", self.model.nc, "\n")
+            # print("\nCH: ", self.model.ch, "\n")
             ch = self.model.ch
             # DAMIR
             self.loss = torch.zeros_like(trainer.loss_items, device=trainer.device)
@@ -129,9 +129,9 @@ class BaseValidator:
             model = AutoBackend(model, device=self.device, dnn=self.args.dnn, data=self.args.data, fp16=self.args.half)
             self.model = model
             # DAMIR
-            self.model.info()
-            print("\nNC: ", self.model.nc, "\n")
-            print("\nCH: ", self.model.ch, "\n")
+            # self.model.info()
+            # print("\nNC: ", self.model.nc, "\n")
+            # print("\nCH: ", self.model.ch, "\n")
             ch = self.model.ch
             # DAMIR
             stride, pt, jit, engine = model.stride, model.pt, model.jit, model.engine
