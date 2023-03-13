@@ -357,6 +357,9 @@ def torch_safe_load(weight):
 
 
 def attempt_load_weights(weights, device=None, inplace=True, fuse=False):
+    # DAMIR
+    print('\n\nATTEMPT_LOAD_WEIGHTs\n')
+    # DAMIR
     # Loads an ensemble of models weights=[a,b,c] or a single model weights=[a] or weights=a
 
     ensemble = Ensemble()
@@ -397,6 +400,9 @@ def attempt_load_weights(weights, device=None, inplace=True, fuse=False):
 
 
 def attempt_load_one_weight(weight, device=None, inplace=True, fuse=False):
+    # DAMIR
+    print('\n\nATTEMPT_LOAD_ONE_WEIGHT\n')
+    # DAMIR
     # Loads a single model weights
     ckpt, weight = torch_safe_load(weight)  # load ckpt
     # DAMIR
@@ -413,7 +419,10 @@ def attempt_load_one_weight(weight, device=None, inplace=True, fuse=False):
     if not hasattr(model, 'stride'):
         model.stride = torch.tensor([32.])
 
-    model.ch = ckpt.get('ch', 6) # DAMIR
+    model.ch = ckpt.get('ch', 3) # DAMIR
+    # DAMIR
+    print('\n\nATTEMPT_LOAD_ONE_WEIGHT - model.ch:', model.ch, '\n\n')
+    # DAMIR
     model = model.fuse().eval() if fuse and hasattr(model, 'fuse') else model.eval()  # model in eval mode
 
     # Module compatibility updates

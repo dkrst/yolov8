@@ -381,7 +381,7 @@ class BaseTrainer:
         self.run_callbacks('teardown')
 
     def save_model(self):
-        print('\n\nCH: ', self.model.ch) # DAMIR
+        # print('\n\nCH: ', self.model.ch) # DAMIR
         ckpt = {
             'epoch': self.epoch,
             'best_fitness': self.best_fitness,
