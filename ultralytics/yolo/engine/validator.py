@@ -66,13 +66,13 @@ class BaseValidator:
             args (SimpleNamespace): Configuration for the validator.
         """
         if dataloader is None:
-            print("Dataloader None")
+            LOGGER.info("Dataloader None")
         else:
-            print("Dataloader")
+            LOGGER.info("Dataloader")
         if args is None:
-            print("Args None")
+            LOGGER.info("Args None")
         else:
-            print(args)
+            LOGGER.info(f'ARGS:\n{args})
         self.dataloader = dataloader
         self.pbar = pbar
         self.args = args or get_cfg(DEFAULT_CFG)
