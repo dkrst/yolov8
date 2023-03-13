@@ -400,8 +400,8 @@ def attempt_load_one_weight(weight, device=None, inplace=True, fuse=False):
     # Loads a single model weights
     ckpt, weight = torch_safe_load(weight)  # load ckpt
     # DAMIR
-    print('\n\nCKPT:\n', ckpt)
-    print('\n\nWEIGHT:\n', weight)
+    # print('\n\nCKPT:\n', ckpt)
+    #print('\n\nWEIGHT:\n', weight)
     # DAMIR
     args = {**DEFAULT_CFG_DICT, **ckpt['train_args']}  # combine model and default args, preferring model args
     model = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
@@ -413,6 +413,7 @@ def attempt_load_one_weight(weight, device=None, inplace=True, fuse=False):
     if not hasattr(model, 'stride'):
         model.stride = torch.tensor([32.])
 
+    model.ch = ckpt.get('ch', 6) # DAMIR
     model = model.fuse().eval() if fuse and hasattr(model, 'fuse') else model.eval()  # model in eval mode
 
     # Module compatibility updates

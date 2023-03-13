@@ -115,7 +115,6 @@ class BaseValidator:
             # self.model.info()
             # print("\nNC: ", self.model.nc, "\n")
             print("\nTRAINING CH: ", self.model.ch, "\n")
-            ch = self.model.ch
             # DAMIR
             self.loss = torch.zeros_like(trainer.loss_items, device=trainer.device)
             self.args.plots = trainer.stopper.possible_stop or (trainer.epoch == trainer.epochs - 1)
@@ -132,7 +131,6 @@ class BaseValidator:
             # self.model.info()
             # print("\nNC: ", self.model.nc, "\n")
             print("\nELSE CH: ", self.model.ch, "\n")
-            ch = self.model.ch
             # DAMIR
             stride, pt, jit, engine = model.stride, model.pt, model.jit, model.engine
             imgsz = check_imgsz(self.args.imgsz, stride=stride)
@@ -158,7 +156,7 @@ class BaseValidator:
             self.dataloader = self.dataloader or self.get_dataloader(self.data.get(self.args.split), self.args.batch)
 
             model.eval()
-            model.warmup(imgsz=(1 if pt else self.args.batch, ch, imgsz, imgsz))  # warmup
+            model.warmup(imgsz=(1 if pt else self.args.batch, self.model.ch, imgsz, imgsz))  # warmup
 
         dt = Profile(), Profile(), Profile(), Profile()
         n_batches = len(self.dataloader)

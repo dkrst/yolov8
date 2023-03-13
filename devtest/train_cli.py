@@ -15,7 +15,7 @@ results = model.train(
 
 from ultralytics import YOLO
 #model = YOLO('/home/dkrst/GIT/YOLO/data/yolov8l_6c.yaml')
-model = YOLO('/home/dkrst/GIT/YOLO/yolov8/runs/detect/VAL-dev14/weights/best.pt')
+model = YOLO('/home/dkrst/GIT/YOLO/yolov8/runs/detect/VAL-dev14/weights/last.pt')
 results = model.train(
     data='/home/dkrst/GIT/YOLO/data/NPY-ST-640/data_npy.yaml',
     imgsz=640,
