@@ -72,7 +72,7 @@ class BaseValidator:
         if args is None:
             LOGGER.info("Args None")
         else:
-            LOGGER.info(f'ARGS:\n{args})
+            LOGGER.info(f'ARGS:\n{args}')
         self.dataloader = dataloader
         self.pbar = pbar
         self.args = args or get_cfg(DEFAULT_CFG)
