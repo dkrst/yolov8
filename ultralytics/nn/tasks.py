@@ -374,7 +374,12 @@ def attempt_load_weights(weights, device=None, inplace=True, fuse=False):
         model.task = guess_model_task(model)
         if not hasattr(model, 'stride'):
             model.stride = torch.tensor([32.])
-
+            
+        model.ch = ckpt.get('ch', 3) # DAMIR
+        # DAMIR
+        print('\n\nATTEMPT_LOAD_ONE_WEIGHT - model.ch:', model.ch, '\n\n')
+        # DAMIR
+        
         # Append
         ensemble.append(model.fuse().eval() if fuse and hasattr(model, 'fuse') else model.eval())  # model in eval mode
 
