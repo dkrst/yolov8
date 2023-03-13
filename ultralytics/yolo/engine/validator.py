@@ -66,14 +66,14 @@ class BaseValidator:
             args (SimpleNamespace): Configuration for the validator.
         """
         # DAMIR
-        if dataloader is None:
-            LOGGER.info("Dataloader None")
-        else:
-            LOGGER.info("Dataloader")
-        if args is None:
-            LOGGER.info("Args None")
-        else:
-            LOGGER.info(f'ARGS:\n{args}')
+        #if dataloader is None:
+        #    LOGGER.info("Dataloader None")
+        #else:
+        #    LOGGER.info("Dataloader")
+        #if args is None:
+        #    LOGGER.info("Args None")
+        #else:
+        #    LOGGER.info(f'ARGS:\n{args}')
         # DAMIR
         self.dataloader = dataloader
         self.pbar = pbar
@@ -113,6 +113,7 @@ class BaseValidator:
             self.model = model
             # DAMIR
             self.model.info()
+            print("\nNC: ", self.model.nc, "\n")
             # DAMIR
             self.loss = torch.zeros_like(trainer.loss_items, device=trainer.device)
             self.args.plots = trainer.stopper.possible_stop or (trainer.epoch == trainer.epochs - 1)
