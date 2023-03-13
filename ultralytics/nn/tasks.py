@@ -390,9 +390,11 @@ def attempt_load_weights(weights, device=None, inplace=True, fuse=False):
 
     # Return model
     if len(ensemble) == 1:
+        print("\n\nVRACAM MODEL ...\n") # DAMIR
         return ensemble[-1]
 
     # Return ensemble
+    print("\n\nVRACAM ENSEMBLE ...\n") # DAMIR
     LOGGER.info(f'Ensemble created with {weights}\n')
     for k in 'names', 'nc', 'yaml', 'ch': # DAMIR - dodano 'ch'
         setattr(ensemble, k, getattr(ensemble[0], k))
