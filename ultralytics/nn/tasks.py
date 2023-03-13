@@ -357,9 +357,6 @@ def torch_safe_load(weight):
 
 
 def attempt_load_weights(weights, device=None, inplace=True, fuse=False):
-    # DAMIR
-    print('\n\nATTEMPT_LOAD_WEIGHTs\n')
-    # DAMIR
     # Loads an ensemble of models weights=[a,b,c] or a single model weights=[a] or weights=a
 
     ensemble = Ensemble()
@@ -377,7 +374,7 @@ def attempt_load_weights(weights, device=None, inplace=True, fuse=False):
             
         model.ch = ckpt.get('ch', 3) # DAMIR
         # DAMIR
-        print('\n\nATTEMPT_LOAD_ONE_WEIGHT - model.ch:', model.ch, '\n\n')
+        print('\n\nATTEMPT_LOAD_WEIGHTS - model.ch:', model.ch, '\n\n')
         # DAMIR
         
         # Append
@@ -405,9 +402,6 @@ def attempt_load_weights(weights, device=None, inplace=True, fuse=False):
 
 
 def attempt_load_one_weight(weight, device=None, inplace=True, fuse=False):
-    # DAMIR
-    print('\n\nATTEMPT_LOAD_ONE_WEIGHT\n')
-    # DAMIR
     # Loads a single model weights
     ckpt, weight = torch_safe_load(weight)  # load ckpt
     # DAMIR

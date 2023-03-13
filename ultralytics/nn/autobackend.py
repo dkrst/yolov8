@@ -98,6 +98,7 @@ class AutoBackend(nn.Module):
             pt = True
         elif pt:  # PyTorch
             from ultralytics.nn.tasks import attempt_load_weights
+            print('\n\nUCITAVAM 1...\n') # DAMIR
             model = attempt_load_weights(weights if isinstance(weights, list) else w,
                                          device=device,
                                          inplace=True,
