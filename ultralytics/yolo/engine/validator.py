@@ -114,7 +114,7 @@ class BaseValidator:
             # DAMIR
             # self.model.info()
             # print("\nNC: ", self.model.nc, "\n")
-            # print("\nCH: ", self.model.ch, "\n")
+            print("\nTRAINING CH: ", self.model.ch, "\n")
             ch = self.model.ch
             # DAMIR
             self.loss = torch.zeros_like(trainer.loss_items, device=trainer.device)
@@ -131,7 +131,7 @@ class BaseValidator:
             # DAMIR
             # self.model.info()
             # print("\nNC: ", self.model.nc, "\n")
-            # print("\nCH: ", self.model.ch, "\n")
+            print("\nELSE CH: ", self.model.ch, "\n")
             ch = self.model.ch
             # DAMIR
             stride, pt, jit, engine = model.stride, model.pt, model.jit, model.engine

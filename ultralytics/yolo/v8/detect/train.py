@@ -30,7 +30,7 @@ class DetectionTrainer(BaseTrainer):
         # print(f"\nmodel: \n{self.model.yaml}")
         # ch = self.model.yaml.get('ch', 3)
         # print("\nNC: ", self.model.nc, "\n")
-        # print("\nCH: ", self.model.ch, "\n")
+        # rint("\nCH: ", self.model.ch, "\n")
         # print(f"\nCHANNELS: \n{ch}")
         # DAMIR
         return create_dataloader(path=dataset_path,
