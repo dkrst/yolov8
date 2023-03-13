@@ -65,7 +65,7 @@ class BaseValidator:
             pbar (tqdm.tqdm): Progress bar for displaying progress.
             args (SimpleNamespace): Configuration for the validator.
         """
-        if dataloader in None:
+        if dataloader is None:
             print("Dataloader None")
         else:
             print("Dataloader")
