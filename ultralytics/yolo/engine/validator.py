@@ -128,6 +128,12 @@ class BaseValidator:
             self.args.half &= self.device.type != 'cpu'
             model = AutoBackend(model, device=self.device, dnn=self.args.dnn, data=self.args.data, fp16=self.args.half)
             self.model = model
+            # DAMIR
+            self.model.info()
+            print("\nNC: ", self.model.nc, "\n")
+            print("\nCH: ", self.model.ch, "\n")
+            ch = self.model.ch
+            # DAMIR
             stride, pt, jit, engine = model.stride, model.pt, model.jit, model.engine
             imgsz = check_imgsz(self.args.imgsz, stride=stride)
             if engine:
