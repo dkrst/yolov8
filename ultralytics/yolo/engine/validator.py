@@ -114,6 +114,7 @@ class BaseValidator:
             # DAMIR
             self.model.info()
             print("\nNC: ", self.model.nc, "\n")
+            print("\nCH: ", self.model.ch, "\n")
             # DAMIR
             self.loss = torch.zeros_like(trainer.loss_items, device=trainer.device)
             self.args.plots = trainer.stopper.possible_stop or (trainer.epoch == trainer.epochs - 1)
