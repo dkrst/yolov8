@@ -65,6 +65,7 @@ class BaseValidator:
             pbar (tqdm.tqdm): Progress bar for displaying progress.
             args (SimpleNamespace): Configuration for the validator.
         """
+        # DAMIR
         if dataloader is None:
             LOGGER.info("Dataloader None")
         else:
@@ -73,6 +74,7 @@ class BaseValidator:
             LOGGER.info("Args None")
         else:
             LOGGER.info(f'ARGS:\n{args}')
+        # DAMIR
         self.dataloader = dataloader
         self.pbar = pbar
         self.args = args or get_cfg(DEFAULT_CFG)
@@ -109,6 +111,9 @@ class BaseValidator:
             self.args.half = self.device.type != 'cpu'  # force FP16 val during training
             model = model.half() if self.args.half else model.float()
             self.model = model
+            # DAMIR
+            self.model.info()
+            # DAMIR
             self.loss = torch.zeros_like(trainer.loss_items, device=trainer.device)
             self.args.plots = trainer.stopper.possible_stop or (trainer.epoch == trainer.epochs - 1)
             model.eval()
