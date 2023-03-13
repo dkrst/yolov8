@@ -381,10 +381,12 @@ class BaseTrainer:
         self.run_callbacks('teardown')
 
     def save_model(self):
+        print('\n\nCH: ', self.model.ch) # DAMIR
         ckpt = {
             'epoch': self.epoch,
             'best_fitness': self.best_fitness,
             'model': deepcopy(de_parallel(self.model)).half(),
+            'ch': self.model.ch, # DAMIR
             'ema': deepcopy(self.ema.ema).half(),
             'updates': self.ema.updates,
             'optimizer': self.optimizer.state_dict(),

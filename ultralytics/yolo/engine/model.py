@@ -134,8 +134,19 @@ class YOLO:
         if suffix == '.pt':
             self.model, self.ckpt = attempt_load_one_weight(weights)
             self.task = self.model.args['task']
+            # DAMIR
+            print('\n\nCKPT:\n', self.ckpt)
+            print('\n\nARGS:\n', self.model.args)
+            # DAMIR
             self.overrides = self.model.args = self._reset_ckpt_args(self.model.args)
             self.ckpt_path = self.model.pt_path
+            # DAMIR
+            #print('\n\nCKPT:\n', self.ckpt)
+            #print('\n\nTASK:\n', self.task)
+            #print('\n\nOVERRIDES:\n', self.overrides)
+            #print('\n\nPATH:\n', self.ckpt_path)
+            #print('\n\nMODEL:\n', self.model)
+            # DAMIR
         else:
             weights = check_file(weights)
             self.model, self.ckpt = weights, None

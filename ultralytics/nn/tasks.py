@@ -399,6 +399,10 @@ def attempt_load_weights(weights, device=None, inplace=True, fuse=False):
 def attempt_load_one_weight(weight, device=None, inplace=True, fuse=False):
     # Loads a single model weights
     ckpt, weight = torch_safe_load(weight)  # load ckpt
+    # DAMIR
+    print('\n\nCKPT:\n', ckpt)
+    print('\n\nWEIGHT:\n', weight)
+    # DAMIR
     args = {**DEFAULT_CFG_DICT, **ckpt['train_args']}  # combine model and default args, preferring model args
     model = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
 
