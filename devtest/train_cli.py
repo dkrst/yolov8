@@ -19,10 +19,17 @@ model = YOLO('/home/dkrst/GIT/YOLO/data/yolov8l_6c.yaml')
 results = model.train(
     data='/home/dkrst/GIT/YOLO/data/NPY-ST-640/data_npy.yaml',
     imgsz=640,
-    epochs=1, #333,
+    epochs=333,
     batch=16,
     augment=True,
     v5loader=True,
     #name='NPY0-cli'
-    name='VAL-dev1'
+    cache=True,
+    device='cuda:0',
+    name='NPY0'
 )
+from clearml import Task
+task = Task.current_task()
+task.get_status()
+task.mark_completed()
+#task.mark_failed()
