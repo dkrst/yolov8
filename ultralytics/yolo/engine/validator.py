@@ -65,16 +65,7 @@ class BaseValidator:
             pbar (tqdm.tqdm): Progress bar for displaying progress.
             args (SimpleNamespace): Configuration for the validator.
         """
-        # DAMIR
-        #if dataloader is None:
-        #    LOGGER.info("Dataloader None")
-        #else:
-        #    LOGGER.info("Dataloader")
-        #if args is None:
-        #    LOGGER.info("Args None")
-        #else:
-        #    LOGGER.info(f'ARGS:\n{args}')
-        # DAMIR
+        
         self.dataloader = dataloader
         self.pbar = pbar
         self.args = args or get_cfg(DEFAULT_CFG)
@@ -111,11 +102,8 @@ class BaseValidator:
             self.args.half = self.device.type != 'cpu'  # force FP16 val during training
             model = model.half() if self.args.half else model.float()
             self.model = model
-            # DAMIR
-            # self.model.info()
-            # print("\nNC: ", self.model.nc, "\n")
-            print("\nTRAINING CH: ", self.model.ch, "\n")
-            # DAMIR
+            # DAMIR - DEBUG
+            # print("\nTRAINING CH: ", self.model.ch, "\n")
             self.loss = torch.zeros_like(trainer.loss_items, device=trainer.device)
             self.args.plots = trainer.stopper.possible_stop or (trainer.epoch == trainer.epochs - 1)
             model.eval()
@@ -127,11 +115,7 @@ class BaseValidator:
             self.args.half &= self.device.type != 'cpu'
             model = AutoBackend(model, device=self.device, dnn=self.args.dnn, data=self.args.data, fp16=self.args.half)
             self.model = model
-            # DAMIR
-            # self.model.info()
-            # print("\nNC: ", self.model.nc, "\n")
-            print("\nELSE CH: ", self.model.ch, "\n")
-            # DAMIR
+            # print("\nELSE CH: ", self.model.ch, "\n") # DAMIR - DEBUG
             stride, pt, jit, engine = model.stride, model.pt, model.jit, model.engine
             imgsz = check_imgsz(self.args.imgsz, stride=stride)
             if engine:

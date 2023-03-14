@@ -373,9 +373,8 @@ def attempt_load_weights(weights, device=None, inplace=True, fuse=False):
             model.stride = torch.tensor([32.])
             
         model.ch = ckpt.get('ch', 3) # DAMIR
-        # DAMIR
-        print('\n\nATTEMPT_LOAD_WEIGHTS - model.ch:', model.ch, '\n\n')
-        # DAMIR
+        # DAMIR - DEBUG
+        # print('\n\nATTEMPT_LOAD_WEIGHTS - model.ch:', model.ch, '\n\n')
         
         # Append
         ensemble.append(model.fuse().eval() if fuse and hasattr(model, 'fuse') else model.eval())  # model in eval mode
@@ -390,11 +389,11 @@ def attempt_load_weights(weights, device=None, inplace=True, fuse=False):
 
     # Return model
     if len(ensemble) == 1:
-        print("\n\nVRACAM MODEL ...\n") # DAMIR
+        # print("\n\nVRACAM MODEL ...\n") # DAMIR - DEBUG
         return ensemble[-1]
 
     # Return ensemble
-    print("\n\nVRACAM ENSEMBLE ...\n") # DAMIR
+    # print("\n\nVRACAM ENSEMBLE ...\n") # DAMIR - DEBUG
     LOGGER.info(f'Ensemble created with {weights}\n')
     for k in 'names', 'nc', 'yaml', 'ch': # DAMIR - dodano 'ch'
         setattr(ensemble, k, getattr(ensemble[0], k))
@@ -407,10 +406,6 @@ def attempt_load_weights(weights, device=None, inplace=True, fuse=False):
 def attempt_load_one_weight(weight, device=None, inplace=True, fuse=False):
     # Loads a single model weights
     ckpt, weight = torch_safe_load(weight)  # load ckpt
-    # DAMIR
-    # print('\n\nCKPT:\n', ckpt)
-    #print('\n\nWEIGHT:\n', weight)
-    # DAMIR
     args = {**DEFAULT_CFG_DICT, **ckpt['train_args']}  # combine model and default args, preferring model args
     model = (ckpt.get('ema') or ckpt['model']).to(device).float()  # FP32 model
 
@@ -422,9 +417,8 @@ def attempt_load_one_weight(weight, device=None, inplace=True, fuse=False):
         model.stride = torch.tensor([32.])
 
     model.ch = ckpt.get('ch', 3) # DAMIR
-    # DAMIR
-    print('\n\nATTEMPT_LOAD_ONE_WEIGHT - model.ch:', model.ch, '\n\n')
-    # DAMIR
+    # DAMIR - DEBUG
+    # print('\n\nATTEMPT_LOAD_ONE_WEIGHT - model.ch:', model.ch, '\n\n')
     model = model.fuse().eval() if fuse and hasattr(model, 'fuse') else model.eval()  # model in eval mode
 
     # Module compatibility updates
