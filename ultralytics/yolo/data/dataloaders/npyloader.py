@@ -434,8 +434,7 @@ class LoadImagesAndLabels(Dataset):
                                                  translate=hyp['translate'],
                                                  scale=hyp['scale'],
                                                  shear=hyp['shear'],
-                                                 perspective=hyp['perspective'],
-                                                 border=hyp['border'])
+                                                 perspective=hyp['perspective'])
             
         nl = len(labels)  # number of labels
         if nl:
