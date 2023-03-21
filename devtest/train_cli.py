@@ -14,8 +14,10 @@ results = model.train(
 # NPY
 
 from ultralytics import YOLO
-model = YOLO('/home/dkrst/GIT/YOLO/data/yolov8l_6c.yaml')
+#model = YOLO('/home/dkrst/GIT/YOLO/data/yolov8l_6c.yaml')
 #model = YOLO('/home/dkrst/GIT/YOLO/yolov8/runs/detect/VAL-dev118/weights/last.pt')
+model = YOLO('/home/dkrst/GIT/YOLO/data/NPY-4C/yolov8l_3c.yaml')
+'''
 results = model.train(
     data='/home/dkrst/GIT/YOLO/data/NPY-ST-640/data_npy.yaml',
     imgsz=640,
@@ -27,6 +29,18 @@ results = model.train(
     cache=True,
     device='cuda:0',
     name='NPY0'
+)
+'''
+results = model.train(
+    data='/home/dkrst/GIT/YOLO/data/NPY-4C/data_3C_raw.yaml',
+    imgsz=640,
+    epochs=333,
+    batch=16,
+    augment=True,
+    v5loader=True,
+    cache=False,
+    device='cuda:1',
+    name='NPY_3Craw'
 )
 from clearml import Task
 task = Task.current_task()

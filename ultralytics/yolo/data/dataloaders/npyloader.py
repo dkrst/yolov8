@@ -43,7 +43,7 @@ from .npyaugmentations import (Albumentations, random_perspective)
 
 # Parameters
 HELP_URL = 'See https://github.com/ultralytics/yolov5/wiki/Train-Custom-Data'
-MAT_FORMATS = 'npy'  # include matrix format for multichannel images
+MAT_FORMATS = 'npz'  # include matrix format for multichannel images
 #IMG_FORMATS = 'bmp', 'dng', 'jpeg', 'jpg', 'mpo', 'png', 'tif', 'tiff', 'webp', 'pfm' # include image suffixes
 #VID_FORMATS = 'asf', 'avi', 'gif', 'm4v', 'mkv', 'mov', 'mp4', 'mpeg', 'mpg', 'ts', 'wmv'  # include video suffixes
 LOCAL_RANK = int(os.getenv('LOCAL_RANK', -1))  # https://pytorch.org/docs/stable/elastic/run.html
@@ -333,7 +333,9 @@ class LoadImagesAndLabels(Dataset):
         b, gb = 0, 1 << 30  # bytes of cached images, bytes per gigabytes
         n = min(self.n, 30)  # extrapolate from 30 random images
         for _ in range(n):
-            im = np.load(random.choice(self.im_files))  # sample image
+            lim = np.load(random.choice(self.im_files)) # sample image
+            im = lim['im']
+            # im = np.load(random.choice(self.im_files))  # sample image
             ratio = self.img_size / max(im.shape[0], im.shape[1])  # max(h, w)  # ratio
             b += im.nbytes * ratio ** 2
         mem_required = b * self.n / n  # GB required to cache dataset into RAM
@@ -481,7 +483,9 @@ class LoadImagesAndLabels(Dataset):
         # Loads 1 image from dataset index 'i', returns (im, original hw, resized hw)
         im, f = self.ims[i], self.im_files[i]
         if im is None:  # not cached in RAM
-            im = np.load(f) # N-channel image 
+            lim = np.load(f) # N-channel image
+            im = lim['im']
+            # im = np.load(f) # N-channel image 
             #assert im is not None, f'Image Not Found {f}'
             h0, w0 = im.shape[:2]  # orig hw
             r = self.img_size / max(h0, w0)  # ratio
@@ -696,7 +700,9 @@ def verify_npy_label(args):
     nm, nf, ne, nc, msg, segments = 0, 0, 0, 0, '', []  # number (missing, found, empty, corrupt), message, segments
     try:
         # verify images
-        im = np.load(im_file, allow_pickle=False)
+        lim = np.load(im_file)
+        im = lim['im']
+        # im = np.load(im_file, allow_pickle=False)
         shape = im.shape[:2]
         channels = im.shape[2]
         assert (shape[0] > 9) & (shape[1] > 9), f'image size {shape} <10 pixels'
