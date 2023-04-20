@@ -16,7 +16,7 @@ results = model.train(
 from ultralytics import YOLO
 #model = YOLO('/home/dkrst/GIT/YOLO/data/yolov8l_6c.yaml')
 #model = YOLO('/home/dkrst/GIT/YOLO/yolov8/runs/detect/VAL-dev118/weights/last.pt')
-model = YOLO('/home/dkrst/GIT/YOLO/data/NPY-4C/yolov8l_3c.yaml')
+model = YOLO('/home/dkrst/GIT/YOLO/data/NPY-4C/yolov8l_4c.yaml')
 '''
 results = model.train(
     data='/home/dkrst/GIT/YOLO/data/NPY-ST-640/data_npy.yaml',
@@ -32,7 +32,7 @@ results = model.train(
 )
 '''
 results = model.train(
-    data='/home/dkrst/GIT/YOLO/data/NPY-4C/data_3C_raw.yaml',
+    data='/home/dkrst/GIT/YOLO/data/NPY-4C/YOLOdist/data_3C_raw.yaml',
     imgsz=640,
     epochs=333,
     batch=16,
