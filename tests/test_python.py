@@ -1,4 +1,4 @@
-# Ultralytics YOLO 🚀, GPL-3.0 license
+# Ultralytics YOLO 🚀, AGPL-3.0 license
 
 from pathlib import Path
 
@@ -94,6 +94,13 @@ def test_val():
 def test_val_scratch():
     model = YOLO(CFG)
     model.val(data='coco8.yaml', imgsz=32)
+
+
+def test_amp():
+    if torch.cuda.is_available():
+        from ultralytics.yolo.engine.trainer import check_amp
+        model = YOLO(MODEL).model.cuda()
+        assert check_amp(model)
 
 
 def test_train_scratch():
@@ -198,21 +205,31 @@ def test_predict_callback_and_setup():
 
 
 def test_result():
+    model = YOLO('yolov8n-pose.pt')
+    res = model([SOURCE, SOURCE])
+    res[0].plot(conf=True, boxes=False)
+    res[0].plot(pil=True)
+    res[0] = res[0].cpu().numpy()
+    print(res[0].path, res[0].keypoints)
+
     model = YOLO('yolov8n-seg.pt')
     res = model([SOURCE, SOURCE])
-    res[0].cpu().numpy()
-    res[0].plot(show_conf=False)
-    print(res[0].path)
+    res[0].plot(conf=True, boxes=False, masks=True)
+    res[0].plot(pil=True)
+    res[0] = res[0].cpu().numpy()
+    print(res[0].path, res[0].masks.data)
 
     model = YOLO('yolov8n.pt')
     res = model(SOURCE)
+    res[0].plot(pil=True)
     res[0].plot()
+    res[0] = res[0].cpu().numpy()
     print(res[0].path)
 
     model = YOLO('yolov8n-cls.pt')
     res = model(SOURCE)
+    res[0].plot(probs=False)
+    res[0].plot(pil=True)
     res[0].plot()
+    res[0] = res[0].cpu().numpy()
     print(res[0].path)
-
-
-test_predict_img()
