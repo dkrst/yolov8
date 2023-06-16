@@ -34,7 +34,7 @@ class Bboxes:
     """Now only numpy is supported."""
 
     def __init__(self, bboxes, format='xyxy') -> None:
-        assert format in _formats
+        assert format in _formats, f'Invalid bounding box format: {format}, format must be one of {_formats}'
         bboxes = bboxes[None, :] if bboxes.ndim == 1 else bboxes
         assert bboxes.ndim == 2
         assert bboxes.shape[1] == 4
@@ -66,7 +66,7 @@ class Bboxes:
 
     def convert(self, format):
         """Converts bounding box format from one type to another."""
-        assert format in _formats
+        assert format in _formats, f'Invalid bounding box format: {format}, format must be one of {_formats}'
         if self.format == format:
             return
         elif self.format == 'xyxy':
@@ -209,9 +209,10 @@ class Instances:
         """Convert bounding box format."""
         self._bboxes.convert(format=format)
 
+    @property
     def bbox_areas(self):
         """Calculate the area of bounding boxes."""
-        self._bboxes.areas()
+        return self._bboxes.areas()
 
     def scale(self, scale_w, scale_h, bbox_only=False):
         """this might be similar with denormalize func but without normalized sign."""
@@ -326,10 +327,20 @@ class Instances:
             self.keypoints[..., 0] = self.keypoints[..., 0].clip(0, w)
             self.keypoints[..., 1] = self.keypoints[..., 1].clip(0, h)
 
+    def remove_zero_area_boxes(self):
+        """Remove zero-area boxes, i.e. after clipping some boxes may have zero width or height. This removes them."""
+        good = self.bbox_areas > 0
+        if not all(good):
+            self._bboxes = self._bboxes[good]
+            if len(self.segments):
+                self.segments = self.segments[good]
+            if self.keypoints is not None:
+                self.keypoints = self.keypoints[good]
+        return good
+
     def update(self, bboxes, segments=None, keypoints=None):
         """Updates instance variables."""
-        new_bboxes = Bboxes(bboxes, format=self._bboxes.format)
-        self._bboxes = new_bboxes
+        self._bboxes = Bboxes(bboxes, format=self._bboxes.format)
         if segments is not None:
             self.segments = segments
         if keypoints is not None:

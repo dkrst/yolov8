@@ -1,6 +1,11 @@
-# Traces
 ---
-:::ultralytics.hub.utils.Traces
+description: Explore Ultralytics events, including 'request_with_credentials' and 'smart_request', to improve your project's performance and efficiency.
+keywords: Ultralytics, Hub Utils, API Documentation, Python, requests_with_progress, Events, classes, usage, examples
+---
+
+# Events
+---
+:::ultralytics.hub.utils.Events
 <br><br>
 
 # request_with_credentials

@@ -1,3 +1,8 @@
+---
+description: 'Ultralytics YOLO Docs: Learn about stream loaders for image and tensor data, as well as autocasting techniques. Check out SourceTypes and more.'
+keywords: Ultralytics YOLO, data loaders, stream load images, screenshots, tensor data, autocast list, youtube URL retriever
+---
+
 # SourceTypes
 ---
 :::ultralytics.yolo.data.dataloaders.stream_loaders.SourceTypes
@@ -31,4 +36,9 @@
 # autocast_list
 ---
 :::ultralytics.yolo.data.dataloaders.stream_loaders.autocast_list
+<br><br>
+
+# get_best_youtube_url
+---
+:::ultralytics.yolo.data.dataloaders.stream_loaders.get_best_youtube_url
 <br><br>

@@ -1,15 +1,21 @@
+---
+comments: true
+description: Use Ultralytics YOLOv8 Modes (Train, Val, Predict, Export, Track, Benchmark) to train, validate, predict, track, export or benchmark.
+keywords: yolov8, yolo, ultralytics, training, validation, prediction, export, tracking, benchmarking, real-time object detection, object tracking
+---
+
 # Ultralytics YOLOv8 Modes
 
 <img width="1024" src="https://github.com/ultralytics/assets/raw/main/yolov8/banner-integrations.png">
 
 Ultralytics YOLOv8 supports several **modes** that can be used to perform different tasks. These modes are:
 
-**Train**: For training a YOLOv8 model on a custom dataset.  
-**Val**: For validating a YOLOv8 model after it has been trained.  
-**Predict**: For making predictions using a trained YOLOv8 model on new images or videos.  
-**Export**: For exporting a YOLOv8 model to a format that can be used for deployment.  
-**Track**: For tracking objects in real-time using a YOLOv8 model.  
-**Benchmark**: For benchmarking YOLOv8 exports (ONNX, TensorRT, etc.) speed and accuracy.
+- **Train**: For training a YOLOv8 model on a custom dataset.
+- **Val**: For validating a YOLOv8 model after it has been trained.
+- **Predict**: For making predictions using a trained YOLOv8 model on new images or videos.
+- **Export**: For exporting a YOLOv8 model to a format that can be used for deployment.
+- **Track**: For tracking objects in real-time using a YOLOv8 model.
+- **Benchmark**: For benchmarking YOLOv8 exports (ONNX, TensorRT, etc.) speed and accuracy.
 
 ## [Train](train.md)
 

@@ -1,3 +1,8 @@
+---
+description: Download and unzip YOLO pretrained models. Ultralytics YOLO docs utils.downloads.unzip_file, checks disk space, downloads and attempts assets.
+keywords: Ultralytics YOLO, downloads, trained models, datasets, weights, deep learning, computer vision
+---
+
 # is_url
 ---
 :::ultralytics.yolo.utils.downloads.is_url

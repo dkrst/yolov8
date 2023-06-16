@@ -1,3 +1,5 @@
+# Ultralytics YOLO 🚀, AGPL-3.0 license
+
 from ultralytics.yolo.utils import LOGGER
 
 try:
@@ -12,7 +14,7 @@ except ImportError:
     tune = None
 
 default_space = {
-    # 'optimizer': tune.choice(['SGD', 'Adam', 'AdamW', 'RMSProp']),
+    # 'optimizer': tune.choice(['SGD', 'Adam', 'AdamW', 'NAdam', 'RAdam', 'RMSProp']),
     'lr0': tune.uniform(1e-5, 1e-1),
     'lrf': tune.uniform(0.01, 1.0),  # final OneCycleLR learning rate (lr0 * lrf)
     'momentum': tune.uniform(0.6, 0.98),  # SGD momentum/Adam beta1
@@ -21,7 +23,6 @@ default_space = {
     'warmup_momentum': tune.uniform(0.0, 0.95),  # warmup initial momentum
     'box': tune.uniform(0.02, 0.2),  # box loss gain
     'cls': tune.uniform(0.2, 4.0),  # cls loss gain (scale with pixels)
-    'fl_gamma': tune.uniform(0.0, 2.0),  # focal loss gamma (efficientDet default gamma=1.5)
     'hsv_h': tune.uniform(0.0, 0.1),  # image HSV-Hue augmentation (fraction)
     'hsv_s': tune.uniform(0.0, 0.9),  # image HSV-Saturation augmentation (fraction)
     'hsv_v': tune.uniform(0.0, 0.9),  # image HSV-Value augmentation (fraction)
@@ -39,5 +40,5 @@ default_space = {
 task_metric_map = {
     'detect': 'metrics/mAP50-95(B)',
     'segment': 'metrics/mAP50-95(M)',
-    'classify': 'top1_acc',
-    'pose': None}
+    'classify': 'metrics/accuracy_top1',
+    'pose': 'metrics/mAP50-95(P)'}

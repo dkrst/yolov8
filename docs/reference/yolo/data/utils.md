@@ -1,3 +1,8 @@
+---
+description: Efficiently handle data in YOLO with Ultralytics. Utilize HUBDatasetStats and customize dataset with these data utility functions.
+keywords: YOLOv4, Object Detection, Computer Vision, Deep Learning, Convolutional Neural Network, CNN, Ultralytics Docs
+---
+
 # HUBDatasetStats
 ---
 :::ultralytics.yolo.data.utils.HUBDatasetStats

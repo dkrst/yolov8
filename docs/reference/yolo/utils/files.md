@@ -1,3 +1,8 @@
+---
+description: 'Learn about Ultralytics YOLO files and directory utilities: WorkingDirectory, file_age, file_size, and make_dirs.'
+keywords: YOLO, object detection, file utils, file age, file size, working directory, make directories, Ultralytics Docs
+---
+
 # WorkingDirectory
 ---
 :::ultralytics.yolo.utils.files.WorkingDirectory
@@ -26,4 +31,9 @@
 # get_latest_run
 ---
 :::ultralytics.yolo.utils.files.get_latest_run
+<br><br>
+
+# make_dirs
+---
+:::ultralytics.yolo.utils.files.make_dirs
 <br><br>

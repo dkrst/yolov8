@@ -1,3 +1,9 @@
+---
+comments: true
+description: Get started with YOLOv8 Predict mode and input sources. Accepts various input sources such as images, videos, and directories.
+keywords: YOLOv8, predict mode, generator, streaming mode, input sources, video formats, arguments customization
+---
+
 <img width="1024" src="https://github.com/ultralytics/assets/raw/main/yolov8/banner-integrations.png">
 
 YOLOv8 **predict mode** can generate predictions for various tasks, returning either a list of `Results` objects or a
@@ -44,7 +50,7 @@ whether each source can be used in streaming mode with `stream=True` ✅ and an 
 | URL         | `'https://ultralytics.com/images/bus.jpg'` | `str`          |                  |
 | screenshot  | `'screen'`                                 | `str`          |                  |
 | PIL         | `Image.open('im.jpg')`                     | `PIL.Image`    | HWC, RGB         |
-| OpenCV      | `cv2.imread('im.jpg')[:,:,::-1]`           | `np.ndarray`   | HWC, BGR to RGB  |
+| OpenCV      | `cv2.imread('im.jpg')`                     | `np.ndarray`   | HWC, BGR         |
 | numpy       | `np.zeros((640,1280,3))`                   | `np.ndarray`   | HWC              |
 | torch       | `torch.zeros(16,3,320,640)`                | `torch.Tensor` | BCHW, RGB        |
 | CSV         | `'sources.csv'`                            | `str`, `Path`  | RTSP, RTMP, HTTP |         
@@ -54,39 +60,40 @@ whether each source can be used in streaming mode with `stream=True` ✅ and an 
 | YouTube ✅   | `'https://youtu.be/Zgi9g1ksQHc'`           | `str`          |                  |
 | stream ✅    | `'rtsp://example.com/media.mp4'`           | `str`          | RTSP, RTMP, HTTP |
 
-
 ## Arguments
+
 `model.predict` accepts multiple arguments that control the prediction operation. These arguments can be passed directly to `model.predict`:
 !!! example
+
     ```
     model.predict(source, save=True, imgsz=320, conf=0.5)
     ```
 
 All supported arguments:
 
-| Key              | Value                  | Description                                              |
-|------------------|------------------------|----------------------------------------------------------|
-| `source`         | `'ultralytics/assets'` | source directory for images or videos                    |
-| `conf`           | `0.25`                 | object confidence threshold for detection                |
-| `iou`            | `0.7`                  | intersection over union (IoU) threshold for NMS          |
-| `half`           | `False`                | use half precision (FP16)                                |
-| `device`         | `None`                 | device to run on, i.e. cuda device=0/1/2/3 or device=cpu |
-| `show`           | `False`                | show results if possible                                 |
-| `save`           | `False`                | save images with results                                 |
-| `save_txt`       | `False`                | save results as .txt file                                |
-| `save_conf`      | `False`                | save results with confidence scores                      |
-| `save_crop`      | `False`                | save cropped images with results                         |
-| `hide_labels`    | `False`                | hide labels                                              |
-| `hide_conf`      | `False`                | hide confidence scores                                   |
-| `max_det`        | `300`                  | maximum number of detections per image                   |
-| `vid_stride`     | `False`                | video frame-rate stride                                  |
-| `line_thickness` | `3`                    | bounding box thickness (pixels)                          |
-| `visualize`      | `False`                | visualize model features                                 |
-| `augment`        | `False`                | apply image augmentation to prediction sources           |
-| `agnostic_nms`   | `False`                | class-agnostic NMS                                       |
-| `retina_masks`   | `False`                | use high-resolution segmentation masks                   |
-| `classes`        | `None`                 | filter results by class, i.e. class=0, or class=[0,2,3]  |
-| `boxes`          | `True`                 | Show boxes in segmentation predictions                   |
+| Key            | Value                  | Description                                                                    |
+|----------------|------------------------|--------------------------------------------------------------------------------|
+| `source`       | `'ultralytics/assets'` | source directory for images or videos                                          |
+| `conf`         | `0.25`                 | object confidence threshold for detection                                      |
+| `iou`          | `0.7`                  | intersection over union (IoU) threshold for NMS                                |
+| `half`         | `False`                | use half precision (FP16)                                                      |
+| `device`       | `None`                 | device to run on, i.e. cuda device=0/1/2/3 or device=cpu                       |
+| `show`         | `False`                | show results if possible                                                       |
+| `save`         | `False`                | save images with results                                                       |
+| `save_txt`     | `False`                | save results as .txt file                                                      |
+| `save_conf`    | `False`                | save results with confidence scores                                            |
+| `save_crop`    | `False`                | save cropped images with results                                               |
+| `hide_labels`  | `False`                | hide labels                                                                    |
+| `hide_conf`    | `False`                | hide confidence scores                                                         |
+| `max_det`      | `300`                  | maximum number of detections per image                                         |
+| `vid_stride`   | `False`                | video frame-rate stride                                                        |
+| `line_width`   | `None`                 | The line width of the bounding boxes. If None, it is scaled to the image size. |
+| `visualize`    | `False`                | visualize model features                                                       |
+| `augment`      | `False`                | apply image augmentation to prediction sources                                 |
+| `agnostic_nms` | `False`                | class-agnostic NMS                                                             |
+| `retina_masks` | `False`                | use high-resolution segmentation masks                                         |
+| `classes`      | `None`                 | filter results by class, i.e. class=0, or class=[0,2,3]                        |
+| `boxes`        | `True`                 | Show boxes in segmentation predictions                                         |
 
 ## Image and Video Formats
 
@@ -132,7 +139,8 @@ The `Results` object contains the following components:
 
 - `Results.boxes`: `Boxes` object with properties and methods for manipulating bounding boxes
 - `Results.masks`: `Masks` object for indexing masks or getting segment coordinates
-- `Results.probs`: `torch.Tensor` containing class probabilities or logits
+- `Results.keypoints`: `Keypoints` object for with properties and methods for manipulating predicted keypoints.
+- `Results.probs`: `Probs` object for containing class probabilities.
 - `Results.orig_img`: Original image loaded in memory
 - `Results.path`: `Path` containing the path to the input image
 
@@ -172,8 +180,8 @@ operations are cached, meaning they're only calculated once per object, and thos
     boxes.xywh  # box with xywh format, (N, 4)
     boxes.xyxyn  # box with xyxy format but normalized, (N, 4)
     boxes.xywhn  # box with xywh format but normalized, (N, 4)
-    boxes.conf  # confidence score, (N, 1)
-    boxes.cls  # cls, (N, 1)
+    boxes.conf  # confidence score, (N, )
+    boxes.cls  # cls, (N, )
     boxes.data  # raw bboxes tensor, (N, 6) or boxes.boxes
     ```
 
@@ -191,15 +199,35 @@ operations are cached, meaning they're only calculated once per object, and thos
     masks.data  # raw masks tensor, (N, H, W) or masks.masks 
     ```
 
+### Keypoints
+
+`Keypoints` object can be used index, manipulate and normalize coordinates. The keypoint conversion operation is cached.
+
+!!! example "Keypoints"
+
+    ```python
+    results = model(inputs)
+    keypoints = results[0].keypoints  # Masks object
+    keypoints.xy  # x, y keypoints (pixels), (num_dets, num_kpts, 2/3), the last dimension can be 2 or 3, depends the model.
+    keypoints.xyn  # x, y keypoints (normalized), (num_dets, num_kpts, 2/3)
+    keypoints.conf  # confidence score(num_dets, num_kpts) of each keypoint if the last dimension is 3.
+    keypoints.data  # raw keypoints tensor, (num_dets, num_kpts, 2/3) 
+    ```
+
 ### probs
 
-`probs` attribute of `Results` class is a `Tensor` containing class probabilities of a classification operation.
+`Probs` object can be used index, get top1&top5 indices and scores of classification.
 
 !!! example "Probs"
 
     ```python
     results = model(inputs)
-    results[0].probs  # cls prob, (num_class, )
+    probs = results[0].probs  # cls prob, (num_class, )
+    probs.top5    # The top5 indices of classification, List[Int] * 5.
+    probs.top1    # The top1 indices of classification, a value with Int type.
+    probs.top5conf  # The top5 scores of classification, a tensor with shape (5, ).
+    probs.top1conf  # The top1 scores of classification. a value with torch.tensor type.
+    keypoints.data  # raw probs tensor, (num_class, ) 
     ```
 
 Class reference documentation for `Results` module and its components can be found [here](../reference/yolo/engine/results.md)
@@ -207,7 +235,7 @@ Class reference documentation for `Results` module and its components can be fou
 ## Plotting results
 
 You can use `plot()` function of `Result` object to plot results on in image object. It plots all components(boxes,
-masks, classification logits, etc.) found in the results object
+masks, classification probabilities, etc.) found in the results object
 
 !!! example "Plotting"
 
@@ -216,20 +244,20 @@ masks, classification logits, etc.) found in the results object
     res_plotted = res[0].plot()
     cv2.imshow("result", res_plotted)
     ```
-| Argument                       | Description                                                                            |
-|--------------------------------|----------------------------------------------------------------------------------------|
-| `conf (bool)`                  | Whether to plot the detection confidence score.                                        |
-| `line_width (float, optional)` | The line width of the bounding boxes. If None, it is scaled to the image size.         |
-| `font_size (float, optional)`  | The font size of the text. If None, it is scaled to the image size.                    |
-| `font (str)`                   | The font to use for the text.                                                          |
-| `pil (bool)`                   | Whether to use PIL for image plotting.                                                 |
-| `example (str)`                | An example string to display. Useful for indicating the expected format of the output. |
-| `img (numpy.ndarray)`          | Plot to another image. if not, plot to original image.                                 |
-| `labels (bool)`                | Whether to plot the label of bounding boxes.                                           |
-| `boxes (bool)`                 | Whether to plot the bounding boxes.                                                    |
-| `masks (bool)`                 | Whether to plot the masks.                                                             |
-| `probs (bool)`                 | Whether to plot classification probability.                                            |
 
+| Argument                      | Description                                                                            |
+|-------------------------------|----------------------------------------------------------------------------------------|
+| `conf (bool)`                 | Whether to plot the detection confidence score.                                        |
+| `line_width (int, optional)`  | The line width of the bounding boxes. If None, it is scaled to the image size.         |
+| `font_size (float, optional)` | The font size of the text. If None, it is scaled to the image size.                    |
+| `font (str)`                  | The font to use for the text.                                                          |
+| `pil (bool)`                  | Whether to use PIL for image plotting.                                                 |
+| `example (str)`               | An example string to display. Useful for indicating the expected format of the output. |
+| `img (numpy.ndarray)`         | Plot to another image. if not, plot to original image.                                 |
+| `labels (bool)`               | Whether to plot the label of bounding boxes.                                           |
+| `boxes (bool)`                | Whether to plot the bounding boxes.                                                    |
+| `masks (bool)`                | Whether to plot the masks.                                                             |
+| `probs (bool)`                | Whether to plot classification probability.                                            |
 
 ## Streaming Source `for`-loop
 
