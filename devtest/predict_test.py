@@ -3,9 +3,9 @@ import numpy as np
 import ultralytics.yolo.data.dataloaders.npyloader as npyloader
 
 
-nloader, ndata = npyloader.create_dataloader('/home/dkrst/GIT/YOLO/data/NPY-new/test/still/', 640, 16,32)nloader, ndata = npyloader.create_dataloader('/home/dkrst/GIT/YOLO/data/NPY-new/test/still/', 640, 16,32)
+nloader, ndata = npyloader.create_dataloader('/home/dkrst/GIT/YOLO/data/NPY-new/test/still/', 640, 16,32)
 
-m, h, w = ndata.load_image(39)
+nim, h, w = ndata.load_image(39)
 nim.shape
 
 from ultralytics import YOLO
