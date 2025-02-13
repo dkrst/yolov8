@@ -209,7 +209,7 @@ class BaseModel(nn.Module):
             preds (torch.Tensor | List[torch.Tensor]): Predictions.
         """
         if not hasattr(self, 'criterion'):
-            self.criterion = self.init_criterion()
+            self.criterion = self.init_criterion()       
         return self.criterion(self.predict(batch['img']) if preds is None else preds, batch)
 
     def init_criterion(self):

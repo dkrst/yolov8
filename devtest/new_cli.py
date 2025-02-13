@@ -1,8 +1,8 @@
 from ultralytics import YOLO
-model = YOLO('/home/dkrst/GIT/YOLO/data/NPY-new/yolov8l_3c.yaml')
+model = YOLO('/home/dkrst/GIT/YOLO/data/Paper-Yolov8/yolov8s_3C.yaml')
 results = model.train(
     #cfg='/home/dkrst/GIT/YOLO/data/NPY-new/temporal_3C-cfg.yaml',
-    cfg='/home/dkrst/GIT/YOLO/data/NPY-new/stillRGB_3C-cfg.yaml',
+    cfg='/home/dkrst/GIT/YOLO/data/Paper-Yolov8/stillRGB_3C-cfg.yaml',
     #cfg='/home/dkrst/GIT/YOLO/data/NPY-new/dist_4C-cfg.yaml',
     #cfg='/home/dkrst/GIT/YOLO/data/NPY-new/fgr_5C-cfg.yaml',
     #

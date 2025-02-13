@@ -161,10 +161,12 @@ class BaseValidator:
 
             # Inference
             with dt[1]:
-                preds = model(batch['img'], augment=self.args.augment)
+                # print('dt[1] augment =', self.args.augment) # Damir - DEBUG
+                preds = model(batch['img'], False ) #augment=self.args.augment) # Damir
 
             # Loss
             with dt[2]:
+                # print('dt[2] training =', self.training) # Damir - DEBUG
                 if self.training:
                     self.loss += model.loss(batch, preds)[1]
 
