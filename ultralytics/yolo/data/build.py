@@ -69,11 +69,12 @@ def seed_worker(worker_id):  # noqa
     random.seed(worker_seed)
 
 
-def build_yolo_dataset(cfg, img_path, batch, data, mode='train', rect=False, stride=32):
+def build_yolo_dataset(cfg, img_path, batch, data, mode='train', rect=False, stride=32, nchannels=3):
     """Build YOLO Dataset"""
-    return YOLODataset(
+    return YOLODataset(  
         img_path=img_path,
         imgsz=cfg.imgsz,
+        nchannels=nchannels,
         batch_size=batch,
         augment=mode == 'train',  # augmentation
         hyp=cfg,  # TODO: probably add a get_hyps_from_cfg function

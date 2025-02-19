@@ -12,8 +12,10 @@ from tqdm import tqdm
 
 from ..utils import LOCAL_RANK, NUM_THREADS, TQDM_BAR_FORMAT, is_dir_writeable
 from .augment import Compose, Format, Instances, LetterBox, classify_albumentations, classify_transforms, v8_transforms
-from .base import BaseDataset
-from .utils import HELP_URL, LOGGER, get_hash, img2label_paths, verify_image_label
+#from .base import BaseDataset
+from .npybase import BaseDataset
+# from .utils import HELP_URL, LOGGER, get_hash, img2label_paths, verify_image_label
+from .utils import HELP_URL, LOGGER, get_hash, npy2label_paths, verify_npy_label
 
 
 class YOLODataset(BaseDataset):
@@ -36,7 +38,7 @@ class YOLODataset(BaseDataset):
         self.use_keypoints = use_keypoints
         self.data = data
         assert not (self.use_segments and self.use_keypoints), 'Can not use both segments and keypoints.'
-        super().__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs) 
 
     def cache_labels(self, path=Path('./labels.cache')):
         """Cache dataset labels, check images and read shapes.
@@ -54,12 +56,19 @@ class YOLODataset(BaseDataset):
             raise ValueError("'kpt_shape' in data.yaml missing or incorrect. Should be a list with [number of "
                              "keypoints, number of dims (2 for x,y or 3 for x,y,visible)], i.e. 'kpt_shape: [17, 3]'")
         with ThreadPool(NUM_THREADS) as pool:
-            results = pool.imap(func=verify_image_label,
+            '''
+            results = pool.imap(func=verify_npy_label,
                                 iterable=zip(self.im_files, self.label_files, repeat(self.prefix),
                                              repeat(self.use_keypoints), repeat(len(self.data['names'])), repeat(nkpt),
                                              repeat(ndim)))
+            '''
+            results = pool.imap(func=verify_npy_label,
+                                iterable=zip(self.im_files,
+                                             self.label_files,
+                                             repeat(self.prefix),
+                                             repeat(self.nchannels)))
             pbar = tqdm(results, desc=desc, total=total, bar_format=TQDM_BAR_FORMAT)
-            for im_file, lb, shape, segments, keypoint, nm_f, nf_f, ne_f, nc_f, msg in pbar:
+            for im_file, lb, shape, segments, nm_f, nf_f, ne_f, nc_f, msg in pbar:
                 nm += nm_f
                 nf += nf_f
                 ne += ne_f
@@ -72,7 +81,7 @@ class YOLODataset(BaseDataset):
                             cls=lb[:, 0:1],  # n, 1
                             bboxes=lb[:, 1:],  # n, 4
                             segments=segments,
-                            keypoints=keypoint,
+                            # keypoints=keypoint,
                             normalized=True,
                             bbox_format='xywh'))
                 if msg:
@@ -100,7 +109,10 @@ class YOLODataset(BaseDataset):
 
     def get_labels(self):
         """Returns dictionary of labels for YOLO training."""
-        self.label_files = img2label_paths(self.im_files)
+        # self.label_files = img2label_paths(self.im_files)
+        self.label_files = npy2label_paths(self.im_files)
+        # DAMIR DEBUG
+        # print(self.label_files, "\n\n\n")
         cache_path = Path(self.label_files[0]).parent.with_suffix('.cache')
         try:
             import gc
@@ -184,12 +196,19 @@ class YOLODataset(BaseDataset):
         """Collates data samples into batches."""
         new_batch = {}
         keys = batch[0].keys()
+        for i, k in enumerate(keys):
+            print('KEY: ', k)
+                  
+        print('\n\n')
         values = list(zip(*[list(b.values()) for b in batch]))
         for i, k in enumerate(keys):
             value = values[i]
+            print('KEY: ', k)
             if k == 'img':
                 value = torch.stack(value, 0)
-            if k in ['masks', 'keypoints', 'bboxes', 'cls']:
+            if k in ['masks', 'keypoints', 'bboxes']:
+                value = torch.cat(value, 0)
+            if k == 'cls':
                 value = torch.cat(value, 0)
             new_batch[k] = value
         new_batch['batch_idx'] = list(new_batch['batch_idx'])
@@ -198,7 +217,24 @@ class YOLODataset(BaseDataset):
         new_batch['batch_idx'] = torch.cat(new_batch['batch_idx'], 0)
         return new_batch
 
-
+    '''
+    @staticmethod
+    def collate_fn(batch):
+        # YOLOv8 collate function, outputs dict
+        im, label, path, shapes = zip(*batch)  # transposed
+        for i, lb in enumerate(label):
+            lb[:, 0] = i  # add target image index for build_targets()
+        batch_idx, cls, bboxes = torch.cat(label, 0).split((1, 1, 4), dim=1)
+        return {
+            'ori_shape': tuple((x[0] if x else None) for x in shapes),
+            'ratio_pad': tuple((x[1] if x else None) for x in shapes),
+            'im_file': path,
+            'img': torch.stack(im, 0),
+            'cls': cls,
+            'bboxes': bboxes,
+            'batch_idx': batch_idx.view(-1)}
+    '''
+    
 # Classification dataloaders -------------------------------------------------------------------------------------------
 class ClassificationDataset(torchvision.datasets.ImageFolder):
     """

@@ -310,7 +310,9 @@ class YOLO:
         args.imgsz = check_imgsz(args.imgsz, max_dim=1)
 
         validator = TASK_MAP[self.task][2](args=args, _callbacks=self.callbacks)
-        validator(model=self.model)
+        # DAMIR DEBUG
+        # print("CH: ", self.model.ch)
+        validator(model=self.model)    # <<<<<<<< 1
         self.metrics = validator.metrics
 
         return validator.metrics

@@ -25,6 +25,7 @@ from ultralytics.yolo.utils.ops import segments2boxes
 
 HELP_URL = 'See https://docs.ultralytics.com/yolov5/tutorials/train_custom_data'
 IMG_FORMATS = 'bmp', 'dng', 'jpeg', 'jpg', 'mpo', 'png', 'tif', 'tiff', 'webp', 'pfm'  # image suffixes
+NPY_FORMATS = 'npz' # Numpy matrix suffixes
 VID_FORMATS = 'asf', 'avi', 'gif', 'm4v', 'mkv', 'mov', 'mp4', 'mpeg', 'mpg', 'ts', 'wmv', 'webm'  # video suffixes
 PIN_MEMORY = str(os.getenv('PIN_MEMORY', True)).lower() == 'true'  # global pin_memory for dataloaders
 IMAGENET_MEAN = 0.485, 0.456, 0.406  # RGB mean
@@ -41,6 +42,16 @@ def img2label_paths(img_paths):
     sa, sb = f'{os.sep}images{os.sep}', f'{os.sep}labels{os.sep}'  # /images/, /labels/ substrings
     return [sb.join(x.rsplit(sa, 1)).rsplit('.', 1)[0] + '.txt' for x in img_paths]
 
+# DAMIR
+# Dopustam proizvoljno ime za direktorij sa slikama
+def npy2label_paths(img_paths):
+    # Define label paths as a function of image paths
+    sb = f'{os.sep}labels{os.sep}'
+    l = []
+    for x in img_paths:
+        sa = f'{os.sep}{Path(x).parent.name}{os.sep}'
+        l.append(sb.join(x.rsplit(sa, 1)).rsplit('.', 1)[0] + '.txt')
+    return l
 
 def get_hash(paths):
     """Returns a single hash value of a list of paths (files or dirs)."""
@@ -133,6 +144,53 @@ def verify_image_label(args):
         msg = f'{prefix}WARNING ⚠️ {im_file}: ignoring corrupt image/label: {e}'
         return [None, None, None, None, None, nm, nf, ne, nc, msg]
 
+
+def verify_npy_label(args):
+    # Verify one image-label pair
+    im_file, lb_file, prefix, nchannels = args
+    nm, nf, ne, nc, msg, segments = 0, 0, 0, 0, '', []  # number (missing, found, empty, corrupt), message, segments
+    try:
+        # verify images
+        lim = np.load(im_file)
+        im = lim['im']
+        # im = np.load(im_file, allow_pickle=False)
+        shape = im.shape[:2]
+        channels = im.shape[2]
+        assert (shape[0] > 9) & (shape[1] > 9), f'image size {shape} <10 pixels'
+        assert channels == nchannels, f'invalid number of image channels {channels}/{nchannels}'
+        
+        # verify labels
+        if os.path.isfile(lb_file):
+            nf = 1  # label found
+            with open(lb_file) as f:
+                lb = [x.split() for x in f.read().strip().splitlines() if len(x)]
+                if any(len(x) > 6 for x in lb):  # is segment
+                    classes = np.array([x[0] for x in lb], dtype=np.float32)
+                    segments = [np.array(x[1:], dtype=np.float32).reshape(-1, 2) for x in lb]  # (cls, xy1...)
+                    lb = np.concatenate((classes.reshape(-1, 1), segments2boxes(segments)), 1)  # (cls, xywh)
+                lb = np.array(lb, dtype=np.float32)
+            nl = len(lb)
+            if nl:
+                assert lb.shape[1] == 5, f'labels require 5 columns, {lb.shape[1]} columns detected'
+                assert (lb >= 0).all(), f'negative label values {lb[lb < 0]}'
+                assert (lb[:, 1:] <= 1).all(), f'non-normalized or out of bounds coordinates {lb[:, 1:][lb[:, 1:] > 1]}'
+                _, i = np.unique(lb, axis=0, return_index=True)
+                if len(i) < nl:  # duplicate row check
+                    lb = lb[i]  # remove duplicates
+                    if segments:
+                        segments = [segments[x] for x in i]
+                    msg = f'{prefix}WARNING ⚠️ {im_file}: {nl - len(i)} duplicate labels removed'
+            else:
+                ne = 1  # label empty
+                lb = np.zeros((0, 5), dtype=np.float32)
+        else:
+            nm = 1  # label missing
+            lb = np.zeros((0, 5), dtype=np.float32)
+        return im_file, lb, shape, segments, nm, nf, ne, nc, msg
+    except Exception as e:
+        nc = 1
+        msg = f'{prefix}WARNING ⚠️ {im_file}: ignoring corrupt image/label: {e}'
+        return [None, None, None, None, nm, nf, ne, nc, msg]
 
 def polygon2mask(imgsz, polygons, color=1, downsample_ratio=1):
     """

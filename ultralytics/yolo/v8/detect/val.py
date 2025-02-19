@@ -176,7 +176,7 @@ class DetectionValidator(BaseValidator):
                 correct[matches[:, 1].astype(int), i] = True
         return torch.tensor(correct, dtype=torch.bool, device=detections.device)
 
-    def build_dataset(self, img_path, mode='val', batch=None):
+    def build_dataset(self, img_path, mode='val', nchannels=3, batch=None):
         """Build YOLO Dataset
 
         Args:
@@ -185,9 +185,10 @@ class DetectionValidator(BaseValidator):
             batch (int, optional): Size of batches, this is for `rect`. Defaults to None.
         """
         gs = max(int(de_parallel(self.model).stride if self.model else 0), 32)
-        return build_yolo_dataset(self.args, img_path, batch, self.data, mode=mode, stride=gs)
 
-    def get_dataloader(self, dataset_path, batch_size):
+        return build_yolo_dataset(self.args, img_path, batch, self.data, mode=mode, stride=gs, nchannels=nchannels)   
+
+    def get_dataloader(self, dataset_path, batch_size, nchannels=3):
         """TODO: manage splits differently."""
         # Calculate stride - check if model is initialized
         if self.args.v5loader:
@@ -198,6 +199,7 @@ class DetectionValidator(BaseValidator):
                                      imgsz=self.args.imgsz,
                                      batch_size=batch_size,
                                      stride=gs,
+                                     nchannels=self.model.ch,
                                      hyp=vars(self.args),
                                      cache=False,
                                      pad=0.5,
@@ -207,7 +209,8 @@ class DetectionValidator(BaseValidator):
                                      shuffle=False,
                                      seed=self.args.seed)[0]
 
-        dataset = self.build_dataset(dataset_path, batch=batch_size, mode='val')
+        print('DATASET_PATH: ' + dataset_path) # DAMIR DEBUG
+        dataset = self.build_dataset(dataset_path, batch=batch_size, nchannels=nchannels, mode='val') # < dole <<<<<<<<< 3
         dataloader = build_dataloader(dataset, batch_size, self.args.workers, shuffle=False, rank=-1)
         return dataloader
 

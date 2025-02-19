@@ -16,7 +16,7 @@ from torch.utils.data import Dataset
 from tqdm import tqdm
 
 from ..utils import DEFAULT_CFG, LOCAL_RANK, LOGGER, NUM_THREADS, TQDM_BAR_FORMAT
-from .utils import HELP_URL, IMG_FORMATS
+from .utils import HELP_URL, IMG_FORMATS, NPY_FORMATS
 
 
 class BaseDataset(Dataset):
@@ -43,13 +43,13 @@ class BaseDataset(Dataset):
         labels (list): List of label data dictionaries.
         ni (int): Number of images in the dataset.
         ims (list): List of loaded images.
-        npy_files (list): List of numpy file paths.
         transforms (callable): Image transformation function.
     """
 
     def __init__(self,
                  img_path,
                  imgsz=640,
+                 nchannels=3, # Set nchannels, default to 3
                  cache=False,
                  augment=True,
                  hyp=DEFAULT_CFG,
@@ -64,12 +64,15 @@ class BaseDataset(Dataset):
         super().__init__()
         self.img_path = img_path
         self.imgsz = imgsz
+        self.nchannels = nchannels
         self.augment = augment
         self.single_cls = single_cls
         self.prefix = prefix
         self.fraction = fraction
-        print('BASE.PY: ima me!\n\n\n')
-        self.im_files = self.get_img_files(self.img_path) # <<<<<<<<<<<< 7
+        # DEBUG DAMIR
+        print("SELF.NCHANNELS(7): ", self.nchannels)
+        # DEBUG
+        self.im_files = self.get_img_files(self.img_path)
         self.labels = self.get_labels()
         self.update_labels(include_class=classes)  # single_cls and include_class
         self.ni = len(self.labels)  # number of images
@@ -89,7 +92,6 @@ class BaseDataset(Dataset):
         if cache == 'ram' and not self.check_cache_ram():
             cache = False
         self.ims, self.im_hw0, self.im_hw = [None] * self.ni, [None] * self.ni, [None] * self.ni
-        self.npy_files = [Path(f).with_suffix('.npy') for f in self.im_files]
         if cache:
             self.cache_images(cache)
 
@@ -113,8 +115,8 @@ class BaseDataset(Dataset):
                         # F += [p.parent / x.lstrip(os.sep) for x in t]  # local to global path (pathlib)
                 else:
                     raise FileNotFoundError(f'{self.prefix}{p} does not exist')
-            im_files = sorted(x.replace('/', os.sep) for x in f if x.split('.')[-1].lower() in IMG_FORMATS)
-            # self.img_files = sorted([x for x in f if x.suffix[1:].lower() in IMG_FORMATS])  # pathlib
+            # im_files = sorted(x.replace('/', os.sep) for x in f if x.split('.')[-1].lower() in IMG_FORMATS)
+            im_files = sorted(x.replace('/', os.sep) for x in f if x.split('.')[-1].lower() in NPY_FORMATS)
             assert im_files, f'{self.prefix}No images found'
         except Exception as e:
             raise FileNotFoundError(f'{self.prefix}Error loading data from {img_path}\n{HELP_URL}') from e
@@ -143,21 +145,19 @@ class BaseDataset(Dataset):
 
     def load_image(self, i):
         """Loads 1 image from dataset index 'i', returns (im, resized hw)."""
-        im, f, fn = self.ims[i], self.im_files[i], self.npy_files[i]
+        im, f = self.ims[i], self.im_files[i]
         if im is None:  # not cached in RAM
-            if fn.exists():  # load npy
-                im = np.load(fn)
-            else:  # read image
-                im = cv2.imread(f)  # BGR
-                if im is None:
-                    raise FileNotFoundError(f'Image Not Found {f}')
+            lim = np.load(f) # N-channel image
+            im = lim['im']
+            if im is None:
+                raise FileNotFoundError(f'Image Not Found {f}')
             h0, w0 = im.shape[:2]  # orig hw
             r = self.imgsz / max(h0, w0)  # ratio
             if r != 1:  # if sizes are not equal
                 interp = cv2.INTER_LINEAR if (self.augment or r > 1) else cv2.INTER_AREA
                 im = cv2.resize(im, (min(math.ceil(w0 * r), self.imgsz), min(math.ceil(h0 * r), self.imgsz)),
                                 interpolation=interp)
-
+                
             # Add to buffer if training with augmentations
             if self.augment:
                 self.ims[i], self.im_hw0[i], self.im_hw[i] = im, (h0, w0), im.shape[:2]  # im, hw_original, hw_resized
@@ -237,7 +237,8 @@ class BaseDataset(Dataset):
 
     def __getitem__(self, index):
         """Returns transformed label information for given index."""
-        return self.transforms(self.get_image_and_label(index))
+        # return self.transforms(self.get_image_and_label(index))
+        return self.get_image_and_label(index)
 
     def get_image_and_label(self, index):
         """Get and return label information from the dataset."""
