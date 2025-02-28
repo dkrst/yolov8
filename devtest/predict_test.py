@@ -37,6 +37,9 @@ import ultralytics.yolo.data.dataloaders.npyloader as npyloader
 from ultralytics import YOLO
 
 model = YOLO('LOCAL/MODELS/joinST_5C-Large/best.pt')
+'''
+model = YOLO('/home/dkrst/GIT/YOLO/yolov8/Paper-Yolov8/joinST_5C-Large-P50/weights/best.pt')
+'''
 
 im = np.load('LOCAL/VALID/join_st/000339_s_000074.npz')['im']
 im.shape
