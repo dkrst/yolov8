@@ -190,7 +190,7 @@ class DetectionValidator(BaseValidator):
     def get_dataloader(self, dataset_path, batch_size):
         """TODO: manage splits differently."""
         # Calculate stride - check if model is initialized
-        if self.args.v5loader:
+        if True: # self.args.v5loader:
             LOGGER.warning("WARNING ⚠️ 'v5loader' feature is deprecated and will be removed soon. You can train using "
                            'the default YOLOv8 dataloader instead, no argument is needed.')
             gs = max(int(de_parallel(self.model).stride if self.model else 0), 32)
