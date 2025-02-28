@@ -1,5 +1,5 @@
 from ultralytics import YOLO
-model = YOLO('/home/dkrst/GIT/YOLO/data/Paper-Yolov8/yolov8s_3C.yaml')
+model = YOLO('/home/dkrst/GIT/YOLO/data/Paper-Yolov8/yolov8l_5C.yaml')
 results = model.train(
     #cfg='/home/dkrst/GIT/YOLO/data/NPY-new/temporal_3C-cfg.yaml',
     cfg='/home/dkrst/GIT/YOLO/data/Paper-Yolov8/stillRGB_3C-cfg.yaml',
