@@ -36,7 +36,11 @@ import numpy as np
 import ultralytics.yolo.data.dataloaders.npyloader as npyloader
 from ultralytics import YOLO
 
-model = YOLO('LOCAL/MODELS/joinST_5C-Large/best.pt')
+model = YOLO('YOLOv8-joinST/joinST_5C-Medium/weights/best.pt')
+nloader, ndata = npyloader.create_dataloader('LOCAL/TEST/join_st', 640, 16,32, nchannels=5)
+
+
+
 '''
 model = YOLO('/home/dkrst/GIT/YOLO/yolov8/Paper-Yolov8/joinST_5C-Large-P50/weights/best.pt')
 '''

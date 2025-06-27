@@ -84,6 +84,11 @@ def create_dataloader(path,
                       prefix='',
                       shuffle=False,
                       seed=0):
+    # DEBUG
+    #print('NCHANNELS 1: ', nchannels)
+    #input('Press Play on Tape...')
+    # DEBUG
+    
     if rect and shuffle:
         LOGGER.warning('WARNING ⚠️ --rect is incompatible with DataLoader shuffle, setting shuffle=False')
         shuffle = False
@@ -188,6 +193,7 @@ class LoadImagesAndLabels(Dataset):
                  pad=0.0,
                  min_items=0,
                  prefix=''):
+        
         self.img_size = img_size
         self.nchannels = nchannels
         self.augment = augment
@@ -199,7 +205,12 @@ class LoadImagesAndLabels(Dataset):
         self.stride = stride
         self.path = path
         self.albumentations = Albumentations(size=img_size) if augment else None
-        
+
+        # DEBUG
+        #print('NCHANNELS 2: ', self.nchannels)
+        #input('Press Play on Tape...')
+        # DEBUG
+
         try:
             f = []  # image files
             for p in path if isinstance(path, list) else [path]:
@@ -231,7 +242,16 @@ class LoadImagesAndLabels(Dataset):
             cache, exists = np.load(cache_path, allow_pickle=True).item(), True  # load dict
             assert cache['version'] == self.cache_version  # matches current version
             assert cache['hash'] == get_hash(self.label_files + self.im_files)  # identical hash
+            # DEBUG
+            #print(cache_path)
+            #print('LOADING FROM CACHE...')
+            #input('Press Play on Tape...')
+            # DEBUG
         except (FileNotFoundError, AssertionError, AttributeError):
+            # DEBUG
+            #print('LOADING FILES...')
+            #input('Press Play on Tape...')
+            # DEBUG
             cache, exists = self.cache_labels(cache_path, prefix), False  # run cache ops
 
         # Display cache
@@ -349,6 +369,10 @@ class LoadImagesAndLabels(Dataset):
     
     # DAMIR
     def cache_labels(self, path=Path('./labels.cache'), prefix=''):
+        # DEBUG
+        #print('NCHANNELS 3: ', self.nchannels)
+        #input('Press Play on Tape...')
+        # DEBUG
         # Cache dataset labels, check images and read shapes
         if path.exists():
             path.unlink()  # remove *.cache file if exists
