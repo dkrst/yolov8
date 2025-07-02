@@ -141,7 +141,8 @@ class BaseValidator:
             self.dataloader = self.dataloader or self.get_dataloader(self.data.get(self.args.split), self.args.batch)
 
             model.eval()
-            self.model.ch = 5
+            # POSTAVLJAM BROJ KANALA RUCNO
+            self.model.ch =  5
             model.warmup(imgsz=(1 if pt else self.args.batch, self.model.ch, imgsz, imgsz))  # warmup
 
         dt = Profile(), Profile(), Profile(), Profile()
